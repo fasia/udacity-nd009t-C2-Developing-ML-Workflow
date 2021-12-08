@@ -1,0 +1,46 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Lambda Invoke - randomize image input",
+  "States": {
+    "Lambda Invoke - randomize image input": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:948339118261:function:select_random_Image:$LATEST"
+      },
+      "Next": "Lambda Invoke- serializeImage"
+    },
+    "Lambda Invoke- serializeImage": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:948339118261:function:serialImageData:$LATEST"
+      },
+      "Next": "Lambda Invoke classificationImage"
+    },
+    "Lambda Invoke classificationImage": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:948339118261:function:classificationImageData:$LATEST"
+      },
+      "Next": "Lambda Invoke filter image"
+    },
+    "Lambda Invoke filter image": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:948339118261:function:filterImageData:$LATEST"
+      },
+      "End": true
+    }
+  }
+}
